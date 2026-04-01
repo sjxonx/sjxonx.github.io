@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>한서준 / Han Seo-jun</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --accent: #c8ff00;
+      --accent2: #00e5ff;
+      --accent3: #ff4d6d;
+      --text: #e8e8f0;
+      --muted: #6b6b85;
+      --border: rgba(200,255,0,0.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans KR', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── Custom Cursor ── */
+    #cursor {
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, background 0.2s;
+      transform: translate(-50%, -50%);
+    }
+    #cursor-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.35s cubic-bezier(.23,1,.32,1), border-color 0.3s;
+      transform: translate(-50%, -50%);
+      opacity: 0.6;
+    }
+    body:hover #cursor { opacity: 1; }
+
+    /* ── Noise overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* ── Language toggle ── */
+    #lang-toggle {
+      position: fixed; top: 24px; right: 28px;
+      z-index: 500;
+      display: flex; gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+    #lang-toggle button {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      padding: 6px 12px;
+      cursor: none;
+      transition: background 0.2s, color 0.2s;
+      letter-spacing: 0.08em;
+    }
+    #lang-toggle button.active {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* ── Nav dots ── */
+    #nav-dots {
+      position: fixed; right: 28px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 12px;
+      z-index: 500;
+    }
+    .nav-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+      cursor: none;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .nav-dot.active {
+      background: var(--accent);
+      transform: scale(1.8);
+    }
+
+    /* ── Sections ── */
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px clamp(24px, 8vw, 120px);
+      position: relative;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      overflow: hidden;
+      padding-top: 0; padding-bottom: 0;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 60% 50%, rgba(200,255,0,0.05) 0%, transparent 70%),
+                  radial-gradient(ellipse 50% 40% at 10% 80%, rgba(0,229,255,0.04) 0%, transparent 60%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(200,255,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,255,0,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridDrift 30s linear infinite;
+    }
+    @keyframes gridDrift {
+      0% { transform: translate(0,0); }
+      100% { transform: translate(60px,60px); }
+    }
+
+    .hero-inner {
+      position: relative; z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      max-width: 1200px;
+    }
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; }
+    }
+
+    .hero-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(72px, 12vw, 160px);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    .hero-name span { color: var(--accent); }
+
+    .hero-slogan {
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(14px, 2vw, 20px);
+      font-weight: 300;
+      color: var(--muted);
+      margin-top: 24px;
+      line-height: 1.6;
+      max-width: 420px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 40px;
+      padding: 14px 28px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s, transform 0.3s;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+      cursor: none;
+    }
+    .hero-cta:hover {
+      background: var(--accent);
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+    .hero-cta::after {
+      content: '↓';
+      transition: transform 0.3s;
+    }
+    .hero-cta:hover::after { transform: translateY(4px); }
+
+    /* Hero right: floating card */
+    .hero-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 36px;
+      position: relative;
+      opacity: 0;
+      animation: fadeLeft 0.9s 0.5s forwards;
+    }
+    @media (max-width: 768px) { .hero-card { display: none; } }
+    .hero-card::before {
+      content: '';
+      position: absolute; top: -1px; left: 20px; right: 20px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .card-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      gap: 20px;
+    }
+    .card-row:last-child { border-bottom: none; }
+    .card-key {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+    .card-val {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 13px;
+      color: var(--text);
+      text-align: right;
+      line-height: 1.5;
+    }
+    .card-val.highlight { color: var(--accent); font-weight: 600; }
+
+    /* ── ABOUT ── */
+    #about { background: var(--surface); }
+    .about-inner {
+      max-width: 1100px;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 80px;
+      align-items: start;
+    }
+    @media (max-width: 768px) { .about-inner { grid-template-columns: 1fr; gap: 40px; } }
+
+    .section-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 120px;
+      line-height: 1;
+      color: rgba(200,255,0,0.06);
+      position: absolute;
+      top: 60px; left: clamp(24px, 8vw, 120px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .section-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-tag::before {
+      content: '';
+      display: block;
+      width: 30px; height: 1px;
+      background: var(--accent);
+    }
+
+    .section-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 32px;
+    }
+
+    .about-text {
+      font-size: 15px;
+      line-height: 1.9;
+      color: rgba(232,232,240,0.75);
+      margin-bottom: 20px;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .timeline-item {
+      display: flex;
+      gap: 24px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      position: relative;
+    }
+    .timeline-item:last-child { border-bottom: none; }
+    .tl-year {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      min-width: 60px;
+      padding-top: 3px;
+    }
+    .tl-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      margin-top: 6px;
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .tl-content {}
+    .tl-title {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .tl-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── AWARD ── */
+    #award {
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .award-inner {
+      max-width: 1100px;
+      position: relative; z-index: 2;
+    }
+    .award-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(200,255,0,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .award-card {
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(200,255,0,0.04), rgba(0,0,0,0));
+      padding: clamp(32px, 5vw, 60px);
+      position: relative;
+      margin-top: 40px;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .award-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(200,255,0,0.1);
+    }
+    .award-card::after {
+      content: '';
+      position: absolute; bottom: -1px; left: 20px; right: 20px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .award-rank {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(60px, 10vw, 120px);
+      line-height: 1;
+      color: var(--accent);
+      display: flex; align-items: baseline; gap: 12px;
+    }
+    .award-rank-sub {
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(14px, 2vw, 22px);
+      color: var(--text);
+      font-weight: 300;
+    }
+    .award-contest {
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(16px, 2.5vw, 24px);
+      margin-top: 16px;
+      font-weight: 600;
+    }
+    .award-meta {
+      display: flex; gap: 24px; flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .award-chip {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      padding: 6px 14px;
+      border: 1px solid rgba(200,255,0,0.3);
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+    .award-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-decoration: none;
+      margin-top: 28px;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+      cursor: none;
+    }
+    .award-link:hover { color: var(--accent); }
+    .award-link::before { content: '→'; }
+
+    /* ── SKILLS ── */
+    #skills { background: var(--surface); }
+    .skills-inner { max-width: 1100px; }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1px;
+      margin-top: 48px;
+      border: 1px solid var(--border);
+    }
+    .skill-cell {
+      padding: 28px 24px;
+      border: none;
+      background: var(--bg);
+      transition: background 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .skill-cell::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(200,255,0,0.06), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .skill-cell:hover { background: rgba(200,255,0,0.04); }
+    .skill-cell:hover::before { opacity: 1; }
+    .skill-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .skill-cell:hover .skill-icon { transform: scale(1.2) rotate(-5deg); }
+    .skill-name {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .skill-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .skill-bar {
+      margin-top: 12px;
+      height: 2px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+    .skill-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 1px;
+      width: 0;
+      transition: width 1.2s cubic-bezier(.23,1,.32,1);
+    }
+    .skill-cell.in-view .skill-fill { width: var(--w); }
+
+    /* ── INTERESTS ── */
+    #interests { background: var(--bg); overflow: hidden; }
+    .interests-inner { max-width: 1100px; }
+    .interest-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 48px;
+    }
+    .interest-card {
+      padding: 32px 28px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.4s cubic-bezier(.23,1,.32,1);
+      cursor: none;
+    }
+    .interest-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s cubic-bezier(.23,1,.32,1);
+    }
+    .interest-card:nth-child(1)::before { background: var(--accent); }
+    .interest-card:nth-child(2)::before { background: var(--accent2); }
+    .interest-card:nth-child(3)::before { background: var(--accent3); }
+    .interest-card:nth-child(4)::before { background: #b388ff; }
+    .interest-card:hover::before { transform: scaleX(1); }
+    .interest-card:hover {
+      border-color: rgba(200,255,0,0.2);
+      transform: translateY(-4px);
+    }
+    .int-icon { font-size: 36px; margin-bottom: 16px; display: block; }
+    .int-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .int-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── CONTACT / FOOTER ── */
+    #contact {
+      background: var(--surface);
+      min-height: auto;
+      padding: 80px clamp(24px, 8vw, 120px);
+    }
+    .contact-inner {
+      max-width: 1100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+    .contact-left {}
+    .contact-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(40px, 6vw, 80px);
+      line-height: 0.95;
+      color: var(--text);
+    }
+    .contact-title span { color: var(--accent); }
+    .footer-note {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      margin-top: 60px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* ── Scroll reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(.23,1,.32,1), transform 0.8s cubic-bezier(.23,1,.32,1);
+    }
+    .reveal.in-view { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── Keyframes ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeLeft {
+      from { opacity: 0; transform: translateX(24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); }
+
+    /* ── Scroll indicator ── */
+    #scroll-indicator {
+      position: fixed; top: 0; left: 0; height: 2px;
+      background: var(--accent);
+      z-index: 600;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* Glitch effect for name */
+    .glitch {
+      position: relative;
+      display: inline-block;
+    }
+    .glitch::before, .glitch::after {
+      content: attr(data-text);
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+    .glitch::before {
+      color: var(--accent2);
+      clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+      transform: translateX(-2px);
+      animation: glitch1 4s infinite;
+    }
+    .glitch::after {
+      color: var(--accent3);
+      clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+      transform: translateX(2px);
+      animation: glitch2 4s infinite;
+    }
+    @keyframes glitch1 {
+      0%, 90%, 100% { transform: translateX(0); opacity: 0; }
+      92% { transform: translateX(-3px); opacity: 0.8; }
+      94% { transform: translateX(3px); opacity: 0.6; }
+      96% { transform: translateX(-2px); opacity: 0.5; }
+    }
+    @keyframes glitch2 {
+      0%, 90%, 100% { transform: translateX(0); opacity: 0; }
+      91% { transform: translateX(3px); opacity: 0.7; }
+      93% { transform: translateX(-3px); opacity: 0.5; }
+      95% { transform: translateX(2px); opacity: 0.6; }
+    }
+
+    /* Marquee */
+    .marquee-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+      background: var(--surface);
+      position: relative;
+      z-index: 2;
+    }
+    .marquee-track {
+      display: flex;
+      gap: 60px;
+      animation: marquee 20s linear infinite;
+      width: max-content;
+    }
+    .marquee-track span {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .marquee-track span.hl { color: var(--accent); }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div id="scroll-indicator"></div>
+
+<!-- Language Toggle -->
+<div id="lang-toggle">
+  <button id="btn-ko" class="active" onclick="setLang('ko')">KO</button>
+  <button id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+
+<!-- Nav Dots -->
+<nav id="nav-dots">
+  <a class="nav-dot active" href="#hero" data-section="hero"></a>
+  <a class="nav-dot" href="#about" data-section="about"></a>
+  <a class="nav-dot" href="#award" data-section="award"></a>
+  <a class="nav-dot" href="#skills" data-section="skills"></a>
+  <a class="nav-dot" href="#interests" data-section="interests"></a>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <p class="hero-label" data-ko="소개합니다" data-en="Hello, World">소개합니다</p>
+      <h1 class="hero-name">
+        <span class="glitch" data-text="HAN">HAN</span><br>
+        SEO<span>-</span><br>JUN
+      </h1>
+      <p class="hero-slogan" data-ko="코드로 세상을 바꾸는 중학생 개발자 — 아직 시작일 뿐입니다." data-en="A middle schooler rewriting the world, one line of code at a time.">
+        코드로 세상을 바꾸는 중학생 개발자 — 아직 시작일 뿐입니다.
+      </p>
+      <a class="hero-cta" href="#about" data-ko="더 알아보기" data-en="Learn More">더 알아보기</a>
+    </div>
+
+    <div class="hero-card">
+      <div class="card-row">
+        <span class="card-key" data-ko="이름" data-en="Name">이름</span>
+        <span class="card-val">한서준 / Han Seo-jun</span>
+      </div>
+      <div class="card-row">
+        <span class="card-key" data-ko="소속" data-en="School">소속</span>
+        <span class="card-val" data-ko="황금중학교 재학" data-en="Hwanggeum Middle School">황금중학교 재학</span>
+      </div>
+      <div class="card-row">
+        <span class="card-key" data-ko="관심분야" data-en="Interests">관심분야</span>
+        <span class="card-val" data-ko="AI · 소프트웨어 개발" data-en="AI · Software Dev">AI · 소프트웨어 개발</span>
+      </div>
+      <div class="card-row">
+        <span class="card-key" data-ko="수상" data-en="Award">수상</span>
+        <span class="card-val highlight" data-ko="2025 전국 학생 코딩대회 2위" data-en="2025 National Coding Contest — 2nd Place">2025 전국 코딩대회 2위</span>
+      </div>
+      <div class="card-row">
+        <span class="card-key" data-ko="위치" data-en="Location">위치</span>
+        <span class="card-val" data-ko="대구, 대한민국" data-en="Daegu, South Korea">대구, 대한민국</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marquee">
+    <span class="hl">한서준</span>
+    <span>·</span>
+    <span>HAN SEO-JUN</span>
+    <span>·</span>
+    <span class="hl">황금중학교</span>
+    <span>·</span>
+    <span>CODING</span>
+    <span>·</span>
+    <span class="hl">AI/SW</span>
+    <span>·</span>
+    <span>2025 NATIONAL CONTEST 2ND</span>
+    <span>·</span>
+    <span class="hl">대구동산초 졸업</span>
+    <span>·</span>
+    <span>DEVELOPER</span>
+    <span>·</span>
+    <!-- duplicate for seamless loop -->
+    <span class="hl">한서준</span>
+    <span>·</span>
+    <span>HAN SEO-JUN</span>
+    <span>·</span>
+    <span class="hl">황금중학교</span>
+    <span>·</span>
+    <span>CODING</span>
+    <span>·</span>
+    <span class="hl">AI/SW</span>
+    <span>·</span>
+    <span>2025 NATIONAL CONTEST 2ND</span>
+    <span>·</span>
+    <span class="hl">대구동산초 졸업</span>
+    <span>·</span>
+    <span>DEVELOPER</span>
+    <span>·</span>
+  </div>
+</div>
+
+<!-- ══════════ ABOUT ══════════ -->
+<section id="about">
+  <div class="section-number">02</div>
+  <div class="about-inner">
+    <div class="reveal">
+      <p class="section-tag" data-ko="소개" data-en="About">소개</p>
+      <h2 class="section-title" data-ko="나에 대해서" data-en="About Me">나에 대해서</h2>
+      <p class="about-text" data-ko="저는 대구에서 자란 중학생 개발자 한서준입니다. 코드 한 줄이 세상을 바꿀 수 있다고 믿으며, 매일 새로운 기술을 배우고 문제를 해결하는 것을 즐깁니다." data-en="I'm Han Seo-jun, a student developer from Daegu. I believe a single line of code can change the world, and I enjoy learning new technologies and solving problems every day.">
+        저는 대구에서 자란 중학생 개발자 한서준입니다. 코드 한 줄이 세상을 바꿀 수 있다고 믿으며, 매일 새로운 기술을 배우고 문제를 해결하는 것을 즐깁니다.
+      </p>
+      <p class="about-text" data-ko="AI와 소프트웨어 개발에 깊은 관심을 갖고 있으며, 전국 대회에서 실력을 검증받은 경험을 토대로 더 큰 도전을 향해 나아가고 있습니다." data-en="With a deep interest in AI and software development, and experience validated through national competitions, I'm pushing toward even bigger challenges.">
+        AI와 소프트웨어 개발에 깊은 관심을 갖고 있으며, 전국 대회에서 실력을 검증받은 경험을 토대로 더 큰 도전을 향해 나아가고 있습니다.
+      </p>
+    </div>
+
+    <div class="timeline reveal reveal-delay-2">
+      <div class="timeline-item">
+        <span class="tl-year">~2024</span>
+        <span class="tl-dot"></span>
+        <div class="tl-content">
+          <p class="tl-title" data-ko="대구동산초등학교 졸업" data-en="Graduated — Daegu Dongsan Elementary">대구동산초등학교 졸업</p>
+          <p class="tl-desc" data-ko="초등학교 시절부터 프로그래밍에 흥미를 갖고 독학으로 코딩을 시작했습니다." data-en="Developed an early interest in programming and started self-learning to code during elementary school.">초등학교 시절부터 프로그래밍에 흥미를 갖고 독학으로 코딩을 시작했습니다.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="tl-year">2025</span>
+        <span class="tl-dot"></span>
+        <div class="tl-content">
+          <p class="tl-title" data-ko="황금중학교 입학" data-en="Enrolled — Hwanggeum Middle School">황금중학교 입학</p>
+          <p class="tl-desc" data-ko="새로운 환경 속에서도 코딩과 AI 학습을 이어가며 실력을 키웠습니다." data-en="Continued building skills in coding and AI in a new academic environment.">새로운 환경 속에서도 코딩과 AI 학습을 이어가며 실력을 키웠습니다.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="tl-year">2025</span>
+        <span class="tl-dot"></span>
+        <div class="tl-content">
+          <p class="tl-title" data-ko="전국 학생 코딩대회 준우승 🏆" data-en="2nd Place — National Student Coding Contest 🏆">전국 학생 코딩대회 준우승 🏆</p>
+          <p class="tl-desc" data-ko="제7회 전국학생코딩경진대회 AI/SW 탐구활동 부문에서 2위를 수상하였습니다." data-en="Awarded 2nd place in the AI/SW Exploration category at the 7th National Student Coding Contest.">제7회 전국학생코딩경진대회 AI/SW 탐구활동 부문에서 2위를 수상하였습니다.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="tl-year">미래 →</span>
+        <span class="tl-dot"></span>
+        <div class="tl-content">
+          <p class="tl-title" data-ko="계속되는 성장" data-en="Growth Continues">계속되는 성장</p>
+          <p class="tl-desc" data-ko="더 큰 대회, 더 어려운 문제, 더 깊은 기술 탐구를 향해 나아가고 있습니다." data-en="Moving toward bigger contests, harder problems, and deeper technical exploration.">더 큰 대회, 더 어려운 문제, 더 깊은 기술 탐구를 향해 나아가고 있습니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ AWARD ══════════ -->
+<section id="award">
+  <div class="award-glow"></div>
+  <div class="award-inner">
+    <div class="reveal">
+      <p class="section-tag" data-ko="수상" data-en="Award">수상</p>
+      <h2 class="section-title" data-ko="대회 성과" data-en="Achievement">대회 성과</h2>
+    </div>
+    <div class="award-card reveal reveal-delay-2">
+      <div class="award-rank">
+        2<sup style="font-size:0.4em;line-height:1;margin-top:0.2em;color:var(--muted)">ND</sup>
+        <span class="award-rank-sub" data-ko="준우승" data-en="Runner-Up">준우승</span>
+      </div>
+      <p class="award-contest" data-ko="제7회 전국 학생 코딩경진대회" data-en="7th National Student Coding Contest">제7회 전국 학생 코딩경진대회</p>
+      <p class="award-contest" style="font-size:clamp(13px,1.8vw,18px);color:var(--muted);font-weight:400;margin-top:6px" data-ko="AI/SW 탐구활동 부문 · 2025" data-en="AI/SW Exploration Category · 2025">AI/SW 탐구활동 부문 · 2025</p>
+      <div class="award-meta">
+        <span class="award-chip" data-ko="전국 규모 대회" data-en="National Competition">전국 규모 대회</span>
+        <span class="award-chip" data-ko="AI / SW 분야" data-en="AI / SW Field">AI / SW 분야</span>
+        <span class="award-chip" data-ko="초등부 참가" data-en="Student Category">초등부 참가</span>
+      </div>
+      <a class="award-link" href="https://codingcontest.or.kr/default/mp2/mp2_sub10.php?sub=05" target="_blank" rel="noopener" data-ko="대회 공식 사이트 보기" data-en="View Official Contest Page">대회 공식 사이트 보기</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SKILLS ══════════ -->
+<section id="skills">
+  <div class="section-number">04</div>
+  <div class="skills-inner">
+    <div class="reveal">
+      <p class="section-tag" data-ko="기술" data-en="Skills">기술</p>
+      <h2 class="section-title" data-ko="무엇을 할 수 있나요" data-en="What I Can Do">무엇을 할 수 있나요</h2>
+    </div>
+    <div class="skills-grid reveal reveal-delay-2">
+      <div class="skill-cell">
+        <span class="skill-icon">🐍</span>
+        <p class="skill-name">Language</p>
+        <p class="skill-label">Python</p>
+        <div class="skill-bar"><div class="skill-fill" style="--w:80%"></div></div>
+      </div>
+      <div class="skill-cell">
+        <span class="skill-icon">🤖</span>
+        <p class="skill-name">Domain</p>
+        <p class="skill-label" data-ko="AI 모델링" data-en="AI Modeling">AI 모델링</p>
+        <div class="skill-bar"><div class="skill-fill" style="--w:70%"></div></div>
+      </div>
+      <div class="skill-cell">
+        <span class="skill-icon">📊</span>
+        <p class="skill-name">Domain</p>
+        <p class="skill-label" data-ko="데이터 분석" data-en="Data Analysis">데이터 분석</p>
+        <div class="skill-bar"><div class="skill-fill" style="--w:72%"></div></div>
+      </div>
+      <div class="skill-cell">
+        <span class="skill-icon">🌐</span>
+        <p class="skill-name">Language</p>
+        <p class="skill-label">HTML / CSS</p>
+        <div class="skill-bar"><div class="skill-fill" style="--w:65%"></div></div>
+      </div>
+      <div class="skill-cell">
+        <span class="skill-icon">🧮</span>
+        <p class="skill-name">Tool</p>
+        <p class="skill-label">AIDU ez</p>
+        <div class="skill-bar"><div class="skill-fill" style="--w:78%"></div></div>
+      </div>
+      <div class="skill-cell">
+        <span class="skill-icon">📑</span>
+        <p class="skill-name">Skill</p>
+        <p class="skill-label" data-ko="발표 / PPT" data-en="Presentation">발표 / PPT</p>
+        <div class="skill-bar"><div class="skill-fill" style="--w:85%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ INTERESTS ══════════ -->
+<section id="interests">
+  <div class="interests-inner">
+    <div class="reveal">
+      <p class="section-tag" data-ko="관심사" data-en="Interests">관심사</p>
+      <h2 class="section-title" data-ko="내가 좋아하는 것들" data-en="What I Love">내가 좋아하는 것들</h2>
+    </div>
+    <div class="interest-cards">
+      <div class="interest-card reveal reveal-delay-1">
+        <span class="int-icon">💻</span>
+        <h3 class="int-title" data-ko="소프트웨어 개발" data-en="Software Development">소프트웨어 개발</h3>
+        <p class="int-desc" data-ko="아이디어를 코드로 실현하는 과정을 좋아합니다. 문제를 발견하고 직접 솔루션을 만들어내는 것이 가장 큰 보람입니다." data-en="I love turning ideas into working code. Finding problems and building solutions myself is the most rewarding part.">아이디어를 코드로 실현하는 과정을 좋아합니다. 문제를 발견하고 직접 솔루션을 만들어내는 것이 가장 큰 보람입니다.</p>
+      </div>
+      <div class="interest-card reveal reveal-delay-2">
+        <span class="int-icon">🧠</span>
+        <h3 class="int-title" data-ko="인공지능" data-en="Artificial Intelligence">인공지능</h3>
+        <p class="int-desc" data-ko="AI가 데이터에서 패턴을 찾아 예측하는 방식에 매력을 느낍니다. 언젠가 사람들의 삶을 바꾸는 AI를 만들고 싶습니다." data-en="I'm fascinated by how AI finds patterns in data to make predictions. I want to build AI that changes people's lives.">AI가 데이터에서 패턴을 찾아 예측하는 방식에 매력을 느낍니다. 언젠가 사람들의 삶을 바꾸는 AI를 만들고 싶습니다.</p>
+      </div>
+      <div class="interest-card reveal reveal-delay-3">
+        <span class="int-icon">🏆</span>
+        <h3 class="int-title" data-ko="대회 & 도전" data-en="Competitions & Challenges">대회 & 도전</h3>
+        <p class="int-desc" data-ko="코딩 대회를 통해 실력을 검증하고 한계를 넓혀갑니다. 경쟁 속에서 성장하는 것을 즐깁니다." data-en="I use coding competitions to validate my skills and push my limits. I enjoy growing through competition.">코딩 대회를 통해 실력을 검증하고 한계를 넓혀갑니다. 경쟁 속에서 성장하는 것을 즐깁니다.</p>
+      </div>
+      <div class="interest-card reveal reveal-delay-4">
+        <span class="int-icon">📚</span>
+        <h3 class="int-title" data-ko="끊임없는 학습" data-en="Continuous Learning">끊임없는 학습</h3>
+        <p class="int-desc" data-ko="기술은 매일 변합니다. 새로운 것을 배우고 적용하는 것을 멈추지 않겠습니다." data-en="Technology changes every day. I won't stop learning and applying what's new.">기술은 매일 변합니다. 새로운 것을 배우고 적용하는 것을 멈추지 않겠습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="contact-left reveal">
+      <h2 class="contact-title" data-ko="함께<br><span>성장해요</span>" data-en="Let's<br><span>Grow.</span>">함께<br><span>성장해요</span></h2>
+      <p style="margin-top:20px;font-size:14px;color:var(--muted);max-width:340px;line-height:1.7" data-ko="코딩, AI, 협업에 관심이 있다면 언제든지 연락 주세요." data-en="If you're interested in coding, AI, or collaboration — feel free to reach out.">코딩, AI, 협업에 관심이 있다면 언제든지 연락 주세요.</p>
+    </div>
+    <div class="reveal reveal-delay-2" style="display:flex;flex-direction:column;gap:16px">
+      <a href="https://github.com/sjxonx" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;padding:16px 24px;border:1px solid rgba(255,255,255,0.08);transition:border-color 0.2s,color 0.2s;cursor:none" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='var(--text)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        github.com/sjxonx
+      </a>
+      <a href="https://sjxonx.github.io" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;padding:16px 24px;border:1px solid rgba(255,255,255,0.08);transition:border-color 0.2s,color 0.2s;cursor:none" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='var(--text)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        sjxonx.github.io
+      </a>
+    </div>
+  </div>
+  <div class="footer-note reveal" style="max-width:1100px;margin-top:0">
+    © 2025 한서준 / Han Seo-jun · Daegu, South Korea · Built with passion for code
+  </div>
+</section>
+
+<script>
+  // ── Cursor ──
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function animCursor() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    cursor.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
+    ring.style.transform   = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
+    requestAnimationFrame(animCursor);
+  })();
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform += ' scale(2)';
+      ring.style.transform   += ' scale(1.5)';
+      ring.style.borderColor = 'var(--accent2)';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.borderColor = 'var(--accent)';
+    });
+  });
+
+  // ── Scroll indicator ──
+  const bar = document.getElementById('scroll-indicator');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = pct + '%';
+  });
+
+  // ── Nav dots ──
+  const sections = document.querySelectorAll('section[id]');
+  const dots     = document.querySelectorAll('.nav-dot');
+  function updateDots() {
+    let cur = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - window.innerHeight / 2) cur = s.id;
+    });
+    dots.forEach(d => d.classList.toggle('active', d.dataset.section === cur));
+  }
+  window.addEventListener('scroll', updateDots);
+  updateDots();
+
+  // ── Scroll reveal ──
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in-view');
+        // trigger skill bars
+        e.target.querySelectorAll('.skill-fill').forEach(f => f.parentElement.parentElement.classList.add('in-view'));
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Skill bar observer
+  const skillCells = document.querySelectorAll('.skill-cell');
+  const sio = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('in-view');
+    });
+  }, { threshold: 0.3 });
+  skillCells.forEach(c => sio.observe(c));
+
+  // ── Language toggle ──
+  let currentLang = 'ko';
+  function setLang(lang) {
+    currentLang = lang;
+    document.getElementById('btn-ko').classList.toggle('active', lang === 'ko');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.querySelectorAll('[data-ko]').forEach(el => {
+      const val = el.getAttribute('data-' + lang);
+      if (val) el.innerHTML = val;
+    });
+  }
+
+  // ── Smooth scroll for anchor links ──
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // ── Parallax subtle on hero ──
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    const heroGrid = document.querySelector('.hero-grid');
+    if (heroGrid) heroGrid.style.transform = `translate(0, ${y * 0.2}px)`;
+  });
+</script>
+</body>
+</html>
